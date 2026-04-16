@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KENALI POTENSI - Portal Penemuan Bakat</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;500;700&display=swap');
+        
+        :root {
+            --neon-amber: #f59e0b;
+            --text-dark: #0f172a;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #ffffff;
+            color: var(--text-dark);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(245, 158, 11, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
+        }
+
+        .shimmer-title {
+            background: linear-gradient(to right, #0f172a 20%, #f59e0b 40%, #fbbf24 50%, #f59e0b 60%, #0f172a 80%);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: shine 4s linear infinite;
+        }
+
+        @keyframes shine { to { background-position: 200% center; } }
+
+        .logo-orb {
+            position: relative;
+            background: white;
+            padding: 1rem; 
+            border-radius: 50%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 140px; height: 140px;
+            margin: 0 auto;
+        }
+
+        .logo-orb::after {
+            content: ''; position: absolute; inset: -8px;
+            border: 2px dashed rgba(245, 158, 11, 0.3);
+            border-radius: 50%;
+            animation: rotate 30s linear infinite;
+        }
+
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(245, 158, 11, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn-futuristic {
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            color: #fff;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.2s ease;
+        }
+
+        .btn-futuristic:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(245, 158, 11, 0.3); }
+
+        .nav-link { color: #64748b; font-weight: 700; transition: all 0.3s; border-bottom: 2px solid transparent; padding-bottom: 4px; }
+        .nav-link.active { color: #f59e0b; border-bottom: 2px solid #f59e0b; }
+
+        .animate-fade { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .radio-tile { transition: all 0.2s ease; }
+        .radio-tile:active { transform: scale(0.95); }
+
+        /* Style baru untuk kutipan motivasi */
+        .quote-container {
+            min-height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            .glass-card { box-shadow: none !important; border: 1px solid #eee !important; background: white !important; }
+            #print-signature { display: block !important; margin-top: 2rem; }
+            nav, footer { display: none !important; }
+            main { padding: 0 !important; }
+            .print-break { page-break-before: always; }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="bg-glow"></div>
+
+    <!-- NAVBAR -->
+    <nav id="top-nav" class="hidden sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-amber-50 px-6 md:px-8 py-4 no-print">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="goToHome()">
+                <div class="bg-amber-50 p-1.5 rounded-xl border border-amber-100">
+                    <img src="https://i.ibb.co.com/FdPM7MN/e39002d3-7849-4a7f-acb4-0f4c3edb5921-removebg-preview.png" alt="Logo" class="w-6 h-6 md:w-8 md:h-8 object-contain">
+                </div>
+                <h1 class="font-bold text-slate-900 text-xs md:text-sm tracking-tight uppercase">POTENSI<span class="text-amber-500">SISWA</span></h1>
+            </div>
+            <div class="flex items-center gap-4 md:gap-8">
+                <div class="flex items-center gap-4 md:gap-6">
+                    <button onclick="showPage('section-quiz')" id="nav-section-quiz" class="nav-link active text-[9px] md:text-[10px] uppercase tracking-widest">Tes</button>
+                    <button onclick="showPage('section-reading')" id="nav-section-reading" class="nav-link text-[9px] md:text-[10px] uppercase tracking-widest">Materi</button>
+                </div>
+                <div class="flex items-center gap-4 pl-4 md:pl-6 border-l border-slate-100">
+                    <span id="user-display" class="hidden sm:block text-slate-900 font-bold text-xs"></span>
+                    <button onclick="logout()" class="text-slate-400 hover:text-rose-500 transition-all p-2">
+                        <i class="fas fa-power-off"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-6 md:py-12 flex flex-col items-center justify-center min-h-[80vh]">
+        
+        <!-- SECTION LOGIN -->
+        <div id="section-login" class="w-full max-w-md page-content animate-fade">
+            <div class="glass-card rounded-[3rem] p-8 md:p-16 text-center">
+                <div class="mb-10">
+                    <div class="logo-orb w-32 h-32 md:w-40 md:h-40">
+                        <img src="https://i.ibb.co.com/FdPM7MN/e39002d3-7849-4a7f-acb4-0f4c3edb5921-removebg-preview.png" alt="Logo" class="w-20 md:w-24">
+                    </div>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold mb-2 tracking-tighter uppercase shimmer-title">KENALI <span class="text-amber-500">POTENSI</span></h2>
+                <p class="text-slate-400 text-[9px] md:text-[10px] font-bold tracking-[0.2em] uppercase mb-6 md:mb-8">KENALI MINAT BAKAT DAN KARIR ANDA</p>
+                
+                <!-- Kalimat Motivasi Dinamis -->
+                <div class="quote-container mb-10">
+                    <p id="dynamic-quote" class="text-slate-500 text-[11px] md:text-xs italic font-medium leading-relaxed bg-slate-50 py-3 px-4 rounded-2xl border border-slate-100"></p>
+                </div>
+
+                <form onsubmit="handleLogin(event)" class="space-y-4 text-left">
+                    <div>
+                        <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Nama Lengkap</label>
+                        <input type="text" id="username" required class="w-full bg-slate-50 border border-slate-100 px-6 py-4 rounded-2xl outline-none focus:border-amber-400 focus:bg-white transition-all font-semibold text-sm" placeholder="Nama Anda...">
+                    </div>
+                    <div>
+                        <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">Kelas / Instansi</label>
+                        <input type="text" id="userclass" required class="w-full bg-slate-50 border border-slate-100 px-6 py-4 rounded-2xl outline-none focus:border-amber-400 focus:bg-white transition-all font-semibold text-sm" placeholder="Kelas Anda...">
+                    </div>
+                    <button type="submit" class="w-full btn-futuristic py-4 md:py-5 rounded-2xl shadow-lg mt-4 text-xs font-bold">Mulai Sekarang</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- SECTION QUIZ -->
+        <div id="section-quiz" class="hidden w-full max-w-2xl page-content animate-fade">
+            <div class="glass-card rounded-[2.5rem] overflow-hidden">
+                <div class="bg-white/80 px-6 md:px-10 py-6 md:py-8 border-b border-slate-100 sticky top-0 z-20 backdrop-blur-md flex justify-between items-center">
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-sm md:text-base">Instrumen Pemetaan</h3>
+                        <p class="text-slate-400 text-[9px] md:text-[10px] uppercase font-bold tracking-widest">Urutan pertanyaan diacak secara otomatis</p>
+                    </div>
+                    <div class="text-right">
+                        <span id="progress-percent" class="text-xl md:text-2xl font-black text-amber-500">0%</span>
+                    </div>
+                </div>
+                <div class="p-6 md:p-10">
+                    <form id="potentialForm" class="space-y-6 md:space-y-8"></form>
+                    <div id="quiz-footer" class="mt-12 pt-8 border-t border-slate-100">
+                        <button onclick="processResults()" class="w-full btn-futuristic py-4 md:py-5 rounded-2xl shadow-xl font-bold text-xs">Analisis Hasil Akhir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION RESULT -->
+        <div id="section-result" class="hidden w-full max-w-6xl page-content animate-fade">
+            <div class="glass-card rounded-[3rem] overflow-hidden bg-white mb-8">
+                <div class="grid lg:grid-cols-12">
+                    <div class="lg:col-span-4 bg-slate-50/50 p-8 md:p-10 border-b lg:border-r border-slate-100 flex flex-col items-center text-center">
+                        <div class="bg-white p-4 rounded-[2rem] shadow-sm mb-6 w-16 h-16 md:w-20 md:h-20 flex items-center justify-center border border-slate-100">
+                            <img src="https://i.ibb.co.com/FdPM7MN/e39002d3-7849-4a7f-acb4-0f4c3edb5921-removebg-preview.png" alt="Logo" class="w-10 h-10 object-contain">
+                        </div>
+                        <h2 id="res-name" class="text-xl md:text-2xl font-bold text-slate-900"></h2>
+                        <p id="res-class" class="text-amber-600 text-[9px] font-black uppercase tracking-widest mb-8"></p>
+                        
+                        <div class="w-full max-w-[280px] mx-auto mb-8 relative px-2">
+                            <canvas id="radarChart"></canvas>
+                        </div>
+
+                        <div class="w-full p-6 bg-amber-500 rounded-3xl text-white shadow-lg mb-6">
+                            <p class="text-[8px] font-bold uppercase opacity-80 mb-1">Potensi Tertinggi</p>
+                            <span id="top-label" class="text-base md:text-lg font-black uppercase tracking-tight"></span>
+                        </div>
+
+                        <div class="w-full p-4 bg-white rounded-2xl border border-slate-100 text-left">
+                            <p class="text-[8px] font-bold text-slate-400 uppercase mb-1">Interpretasi Skor</p>
+                            <p id="top-score-desc" class="text-[10px] text-slate-600 leading-relaxed"></p>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-8 p-8 md:p-12">
+                        <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-10">
+                            <h3 class="text-lg md:text-xl font-bold flex items-center gap-3">
+                                <span class="w-2 h-8 bg-amber-500 rounded-full"></span> Analisis Mendalam & Strategi
+                            </h3>
+                            <button onclick="window.print()" class="no-print w-full sm:w-auto bg-slate-900 text-white text-[9px] px-5 py-2.5 rounded-lg font-bold uppercase tracking-widest hover:bg-amber-500 transition-colors">
+                                <i class="fas fa-download mr-2"></i> Cetak Laporan
+                            </button>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div class="p-6 rounded-[2rem] bg-amber-50/50 border border-amber-100">
+                                <h4 class="text-amber-700 font-bold text-[9px] uppercase mb-3 tracking-widest">Apa Artinya Bagi Anda?</h4>
+                                <p id="result-meaning" class="text-slate-700 text-xs leading-relaxed"></p>
+                            </div>
+                            <div class="p-6 rounded-[2rem] bg-blue-50/50 border border-blue-100">
+                                <h4 class="text-blue-700 font-bold text-[9px] uppercase mb-3 tracking-widest">Lingkungan Belajar Ideal</h4>
+                                <p id="result-environment" class="text-slate-700 text-xs leading-relaxed"></p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="p-8 rounded-[2.5rem] bg-slate-900 text-white relative overflow-hidden">
+                                <div class="absolute top-0 right-0 p-4 opacity-10">
+                                    <i class="fas fa-lightbulb text-6xl"></i>
+                                </div>
+                                <h4 class="text-amber-400 font-bold text-[10px] uppercase mb-4 tracking-widest">Rencana Aksi (Action Plan)</h4>
+                                <ul id="action-plan-list" class="space-y-4 text-xs text-slate-300"></ul>
+                            </div>
+
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="p-6 rounded-[2rem] border border-slate-100">
+                                    <h4 class="text-slate-400 font-bold text-[9px] uppercase mb-3 tracking-widest">Peluang Karir Masa Depan</h4>
+                                    <div id="career-pills" class="flex flex-wrap gap-2"></div>
+                                </div>
+                                <div class="p-6 rounded-[2rem] bg-slate-50 border border-slate-100">
+                                    <h4 class="text-slate-400 font-bold text-[9px] uppercase mb-3 tracking-widest">Tips Pengembangan</h4>
+                                    <p id="growth-tips" class="text-slate-600 text-xs italic"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-[3rem] p-8 md:p-12 print-break">
+                <h3 class="text-lg font-bold mb-6 flex items-center gap-3">
+                    <i class="fas fa-info-circle text-amber-500"></i> Memahami Profil Kecerdasan Anda
+                </h3>
+                <div class="grid md:grid-cols-3 gap-8 text-xs leading-relaxed text-slate-600">
+                    <div>
+                        <h5 class="font-bold text-slate-900 mb-2 uppercase text-[10px]">1. Kecerdasan Majemuk</h5>
+                        <p>Hasil ini didasarkan pada Teori Multiple Intelligences oleh Howard Gardner. Ingatlah bahwa setiap orang memiliki profil kecerdasan yang berbeda-beda.</p>
+                    </div>
+                    <div>
+                        <h5 class="font-bold text-slate-900 mb-2 uppercase text-[10px]">2. Dinamika Potensi</h5>
+                        <p>Bakat Anda bersifat dinamis. Kecerdasan dapat terus diasah melalui latihan, lingkungan yang mendukung, dan kemauan belajar yang kuat.</p>
+                    </div>
+                    <div>
+                        <h5 class="font-bold text-slate-900 mb-2 uppercase text-[10px]">3. Langkah Selanjutnya</h5>
+                        <p>Gunakan hasil ini sebagai panduan untuk memilih ekstrakurikuler, jurusan, atau hobi yang sesuai dengan kekuatan alami Anda.</p>
+                    </div>
+                </div>
+
+                <div id="print-signature" class="hidden mt-16 pt-10 border-t border-slate-200">
+                    <div class="flex justify-between text-center text-[10px]">
+                        <div>
+                            <p class="mb-16 uppercase font-bold text-slate-400 tracking-widest">Peserta Didik</p>
+                            <p id="sig-student" class="font-bold border-b border-slate-900 px-10 pb-1"></p>
+                        </div>
+                        <div>
+                            <p class="mb-16 uppercase font-bold text-slate-400 tracking-widest">Konselor / Guru BK</p>
+                            <p class="font-bold border-b border-slate-900 px-10 pb-1 text-slate-100">________________________</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 no-print text-center">
+                <button onclick="location.reload()" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-amber-500 transition-all">Kembali ke Beranda</button>
+            </div>
+        </div>
+
+        <!-- SECTION READING -->
+        <div id="section-reading" class="hidden w-full max-w-6xl page-content animate-fade">
+            <div class="mb-12 text-center">
+                <h2 class="text-2xl md:text-3xl font-bold mb-4">Wawasan Kecerdasan Majemuk</h2>
+                <p class="text-slate-500 text-xs md:text-sm max-w-2xl mx-auto px-4">Memahami berbagai dimensi kecerdasan manusia berdasarkan teori Howard Gardner.</p>
+            </div>
+             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 w-full px-2" id="reading-content"></div>
+        </div>
+    </main>
+
+    <footer class="py-12 text-center no-print px-6">
+        <p class="text-[8px] font-bold text-slate-300 uppercase tracking-[0.4em] mb-4">Aplikasi Kenali Potensi Pro V 3.5 - 2026</p>
+        <div class="flex flex-col md:flex-row items-center justify-center gap-4 opacity-70">
+            <div class="bg-amber-50 p-1.5 rounded-lg border border-amber-100 grayscale">
+                <img src="https://i.ibb.co.com/FdPM7MN/e39002d3-7849-4a7f-acb4-0f4c3edb5921-removebg-preview.png" alt="Logo" class="w-5 h-5 object-contain">
+            </div>
+            <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest leading-relaxed">
+                Di kembangkan oleh: ALFIAN - GURU BIMBINGAN KONSELING - MANOKWARI - PAPUA BARAT
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Daftar Kutipan Motivasi
+        const MOTIVATIONAL_QUOTES = [
+            "\"Setiap orang adalah jenius. Tapi jika Anda menilai ikan dari kemampuannya memanjat pohon, ia akan percaya seumur hidupnya bahwa itu bodoh.\" - Albert Einstein",
+            "\"Masa depan adalah milik mereka yang percaya pada keindahan mimpi mereka.\" - Eleanor Roosevelt",
+            "\"Bakat Anda adalah hadiah dari Tuhan untuk Anda. Apa yang Anda lakukan dengannya adalah hadiah Anda kembali untuk Tuhan.\"",
+            "\"Pendidikan bukan hanya tentang mengisi wadah, tetapi menyalakan api dalam diri.\"",
+            "\"Jangan biarkan apa yang tidak bisa Anda lakukan mengganggu apa yang bisa Anda lakukan.\"",
+            "\"Sukses tidak selalu tentang menjadi yang terbaik, tapi tentang menjadi versi terbaik dari dirimu sendiri.\"",
+            "\"Kenali kekuatanmu, asah bakatmu, dan dunia akan melihat sinarmu.\"",
+            "\"Tujuan pendidikan adalah mengubah cermin menjadi jendela peluang.\"",
+            "\"Bakat bukanlah hal yang langka, keberanian untuk mengikutinya lah yang jarang ditemukan.\"",
+            "\"Setiap anak memiliki potensi unik yang menunggu untuk ditemukan.\""
+        ];
+
+        const MI_QUESTIONS_BASE = [
+            { id: 'l1', category: 'linguistik', text: 'Saya senang menulis jurnal, cerita, atau artikel pendek.' },
+            { id: 'l2', category: 'linguistik', text: 'Saya menikmati permainan kata seperti teka-teki silang atau scrabble.' },
+            { id: 'l3', category: 'linguistik', text: 'Saya pandai menjelaskan sesuatu kepada orang lain secara verbal.' },
+            { id: 'l4', category: 'linguistik', text: 'Saya lebih mudah belajar dengan membaca daripada melihat diagram.' },
+            { id: 'm1', category: 'logis', text: 'Saya senang memecahkan teka-teki logika atau soal matematika.' },
+            { id: 'm2', category: 'logis', text: 'Saya sering mencari pola atau urutan dalam segala hal.' },
+            { id: 'm3', category: 'logis', text: 'Saya menyukai pengorganisasian data menggunakan tabel atau grafik.' },
+            { id: 'm4', category: 'logis', text: 'Saya sering bertanya "mengapa" dan ingin tahu cara kerja sesuatu.' },
+            { id: 'v1', category: 'spasial', text: 'Saya mudah membayangkan bentuk atau objek dalam pikiran saya.' },
+            { id: 'v2', category: 'spasial', text: 'Saya senang menggambar, melukis, atau desain visual.' },
+            { id: 'v3', category: 'spasial', text: 'Saya pandai membaca peta dan memiliki navigasi arah yang baik.' },
+            { id: 'v4', category: 'spasial', text: 'Saya peka terhadap warna dan estetika sebuah ruangan.' },
+            { id: 'k1', category: 'kinestetik', text: 'Saya lebih suka belajar dengan cara mempraktikkannya langsung.' },
+            { id: 'k2', category: 'kinestetik', text: 'Saya memiliki koordinasi tubuh yang baik saat berolahraga.' },
+            { id: 'k3', category: 'kinestetik', text: 'Saya merasa sulit untuk duduk diam dalam waktu yang lama.' },
+            { id: 'k4', category: 'kinestetik', text: 'Saya senang membuat prakarya, memasang mainan, atau memperbaiki barang yang rusak.' },
+            { id: 'u1', category: 'musikal', text: 'Saya peka terhadap nada, irama, dan bunyi-bunyian.' },
+            { id: 'u2', category: 'musikal', text: 'Saya bisa memainkan instrumen musik atau bernyanyi dengan nada pas.' },
+            { id: 'u3', category: 'musikal', text: 'Saya sering bersenandung atau mengetuk irama saat bekerja.' },
+            { id: 'u4', category: 'musikal', text: 'Musik sangat mempengaruhi suasana hati saya.' },
+            { id: 'i1', category: 'interpersonal', text: 'Saya mudah memahami perasaan dan suasana hati orang lain.' },
+            { id: 'i2', category: 'interpersonal', text: 'Saya lebih suka belajar atau bekerja dalam kelompok.' },
+            { id: 'i3', category: 'interpersonal', text: 'Saya sering menjadi tempat curhat bagi teman-teman saya.' },
+            { id: 'i4', category: 'interpersonal', text: 'Saya pandai mempengaruhi atau meyakinkan orang lain.' },
+            { id: 'p1', category: 'intrapersonal', text: 'Saya memahami betul kekuatan dan kelemahalan diri saya.' },
+            { id: 'p2', category: 'intrapersonal', text: 'Saya butuh waktu sendiri untuk merenungkan tujuan hidup.' },
+            { id: 'p3', category: 'intrapersonal', text: 'Saya memiliki prinsip yang kuat dan tidak mudah ikut-ikutan.' },
+            { id: 'n1', category: 'naturalis', text: 'Saya merasa tenang dan berenergi saat berada di alam terbuka.' },
+            { id: 'n2', category: 'naturalis', text: 'Saya senang merawat tanaman atau hewan peliharaan.' },
+            { id: 'n3', category: 'naturalis', text: 'Saya tertarik mempelajari fenomena alam atau astronomi.' }
+        ];
+
+        const MI_DATA = {
+            linguistik: { 
+                label: 'Linguistik', tagline: 'Kekuatan Kata', icon: 'fa-book-open',
+                meaning: 'Anda memiliki kemampuan luar biasa dalam mengolah kata-kata, baik secara lisan maupun tulisan.',
+                environment: 'Perpustakaan, ruang diskusi, atau panggung debat.',
+                careers: ['Jurnalis', 'Penulis', 'Pengacara', 'Editor', 'Guru', 'PR'],
+                actions: ['Mulai menulis blog.', 'Ikuti kompetisi pidato.', 'Baca buku secara rutin.'],
+                strategy: 'Catat materi dengan kata-kata sendiri.',
+                traits: 'Peka terhadap makna kata and suka membaca.'
+            },
+            logis: { 
+                label: 'Logis-Matematis', tagline: 'Pola & Logika', icon: 'fa-calculator',
+                meaning: 'Anda cenderung berpikir secara sistematis, menyukai angka, dan analisis sebab-akibat.',
+                environment: 'Laboratorium, ruang kerja data, lingkungan yang terorganisir.',
+                careers: ['Programmer', 'Ilmuwan', 'Akuntan', 'Insinyur', 'Analis'],
+                actions: ['Main catur.', 'Belajar coding.', 'Buat rencana anggaran.'],
+                strategy: 'Gunakan tabel dan diagram alir.',
+                traits: 'Suka berhitung and memecahkan teka-teki.'
+            },
+            spasial: { 
+                label: 'Spasial (Visual)', tagline: 'Dunia Visual', icon: 'fa-palette',
+                meaning: 'Anda memiliki imajinasi visual yang kaya dan kemampuan navigasi ruang yang baik.',
+                environment: 'Studio seni, ruang terbuka, atau depan layar desain.',
+                careers: ['Arsitek', 'Desainer', 'Fotografer', 'Pilot', 'Animator'],
+                actions: ['Belajar desain digital.', 'Gunakan mind mapping.', 'Dekorasi ruangan.'],
+                strategy: 'Gunakan simbol and visualisasi mental.',
+                traits: 'Memiliki imajinasi kuat and pandai menggambar.'
+            },
+            kinestetik: { 
+                label: 'Kinestetik', tagline: 'Kecerdasan Fisik', icon: 'fa-running',
+                meaning: 'Tubuh adalah alat belajar utama Anda. Anda belajar paling baik saat bergerak.',
+                environment: 'Lapangan olahraga, bengkel, atau panggung tari.',
+                careers: ['Atlet', 'Dokter Bedah', 'Teknisi', 'Penari', 'Aktor'],
+                actions: ['Ikut klub olahraga.', 'Buat kerajinan tangan.', 'Belajar sambil bergerak.'],
+                strategy: 'Gunakan benda fisik untuk simulasi.',
+                traits: 'Cekatan and koordinasi fisik bagus.'
+            },
+            musikal: { 
+                label: 'Musikal', tagline: 'Irama & Nada', icon: 'fa-music',
+                meaning: 'Anda peka terhadap pola bunyi dan mampu mengekspresikan emosi melalui melodi.',
+                environment: 'Studio musik atau ruangan dengan harmoni suara.',
+                careers: ['Musisi', 'Sound Engineer', 'Komposer', 'Produser'],
+                actions: ['Belajar instrumen.', 'Buat lagu sederhana.', 'Gunakan musik untuk fokus.'],
+                strategy: 'Ubah teks sulit menjadi rima lagu.',
+                traits: 'Peka nada and irama.'
+            },
+            interpersonal: { 
+                label: 'Interpersonal', tagline: 'Kecerdasan Sosial', icon: 'fa-users',
+                meaning: 'Anda ahli dalam memahami orang lain, memimpin kelompok, dan menjalin hubungan.',
+                environment: 'Acara komunitas atau lingkungan kerja tim.',
+                careers: ['Psikolog', 'Diplomat', 'Manajer', 'Konselor', 'Sales'],
+                actions: ['Aktif organisasi.', 'Jadi sukarelawan.', 'Latih empati.'],
+                strategy: 'Belajar melalui diskusi kelompok.',
+                traits: 'Empati tinggi and pandai memimpin.'
+            },
+            intrapersonal: { 
+                label: 'Intrapersonal', tagline: 'Memahami Diri', icon: 'fa-user-shield',
+                meaning: 'Anda mengerti betul nilai-nilai diri dan bekerja paling baik secara mandiri.',
+                environment: 'Ruang pribadi yang tenang atau tempat refleksi.',
+                careers: ['Psikolog', 'Penulis', 'Pengusaha', 'Peneliti'],
+                actions: ['Tulis visi hidup.', 'Evaluasi diri mingguan.', 'Meditasi.'],
+                strategy: 'Tetapkan tujuan belajar yang personal.',
+                traits: 'Mandiri and mengerti emosi diri.'
+            },
+            naturalis: { 
+                label: 'Naturalis', tagline: 'Kepekaan Alam', icon: 'fa-leaf',
+                meaning: 'Anda ahli dalam mengenali pola organik dan peduli pada lingkungan.',
+                environment: 'Taman, kebun, atau alam terbuka.',
+                careers: ['Biolog', 'Dokter Hewan', 'Aktivis Alam', 'Geolog'],
+                actions: ['Berkebun.', 'Hiking ke alam.', 'Identifikasi tanaman.'],
+                strategy: 'Lakukan aktivitas belajar di luar ruangan.',
+                traits: 'Cinta alam and peka lingkungan.'
+            }
+        };
+
+        let sessionData = { name: '', class: '' };
+        let radarChartInstance = null;
+        let shuffledQuestions = [];
+
+        // Inisialisasi kutipan saat halaman dimuat
+        window.onload = function() {
+            setRandomQuote();
+        };
+
+        function setRandomQuote() {
+            const quoteEl = document.getElementById('dynamic-quote');
+            if(quoteEl) {
+                const randomIndex = Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length);
+                quoteEl.innerText = MOTIVATIONAL_QUOTES[randomIndex];
+            }
+        }
+
+        function shuffleArray(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+            document.getElementById(pageId).classList.remove('hidden');
+            document.querySelectorAll('.nav-link').forEach(l => {
+                l.classList.remove('active');
+                if(l.id === `nav-${pageId}`) l.classList.add('active');
+            });
+            if(pageId === 'section-reading') renderReading();
+            if(pageId === 'section-login') setRandomQuote(); // Ubah kutipan tiap balik login
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            sessionData.name = document.getElementById('username').value;
+            sessionData.class = document.getElementById('userclass').value;
+            document.getElementById('user-display').innerText = sessionData.name;
+            document.getElementById('top-nav').classList.remove('hidden');
+            
+            shuffledQuestions = shuffleArray([...MI_QUESTIONS_BASE]);
+            
+            renderQuiz();
+            showPage('section-quiz');
+        }
+
+        function renderQuiz() {
+            const form = document.getElementById('potentialForm');
+            form.innerHTML = shuffledQuestions.map((q, i) => `
+                <div class="space-y-4 animate-fade p-6 md:p-8 bg-slate-50/50 rounded-3xl border border-slate-100/50 hover:border-amber-200 transition-all group">
+                    <div class="flex gap-4">
+                        <span class="flex-shrink-0 w-8 h-8 rounded-full bg-white border border-amber-100 flex items-center justify-center text-[10px] font-bold text-amber-500 shadow-sm">${i+1}</span>
+                        <p class="text-slate-800 font-bold text-sm md:text-base leading-relaxed group-hover:text-amber-700 transition-colors">${q.text}</p>
+                    </div>
+                    <div class="flex items-center gap-2 md:gap-3 pl-12">
+                        ${[1,2,3,4,5].map(v => `
+                            <label class="flex-1 radio-tile">
+                                <input type="radio" name="${q.id}" value="${v}" class="hidden peer" onchange="updateProgress()">
+                                <div class="py-3 border border-slate-200 rounded-xl text-center cursor-pointer peer-checked:bg-amber-500 peer-checked:border-amber-500 peer-checked:text-white hover:bg-white hover:border-amber-300 font-black transition-all text-xs text-slate-400">
+                                    ${v}
+                                </div>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const checked = document.querySelectorAll('input[type="radio"]:checked').length;
+            const percent = Math.round((checked / shuffledQuestions.length) * 100);
+            document.getElementById('progress-percent').innerText = `${percent}%`;
+        }
+
+        function processResults() {
+            const scores = {};
+            const counts = {};
+            Object.keys(MI_DATA).forEach(k => { scores[k] = 0; counts[k] = 0; });
+            
+            let checkedCount = 0;
+            shuffledQuestions.forEach(q => {
+                const radio = document.querySelector(`input[name="${q.id}"]:checked`);
+                if(radio) {
+                    scores[q.category] += parseInt(radio.value);
+                    counts[q.category]++;
+                    checkedCount++;
+                }
+            });
+
+            if(checkedCount < shuffledQuestions.length) { 
+                alert(`Mohon selesaikan instrumen (${checkedCount}/${shuffledQuestions.length} terisi).`); 
+                return; 
+            }
+
+            const normalizedScores = {};
+            Object.keys(scores).forEach(k => {
+                normalizedScores[k] = (scores[k] / (counts[k] * 5)) * 100;
+            });
+
+            const topKey = Object.keys(normalizedScores).reduce((a, b) => normalizedScores[a] > normalizedScores[b] ? a : b);
+            const topData = MI_DATA[topKey];
+
+            document.getElementById('res-name').innerText = sessionData.name;
+            document.getElementById('res-class').innerText = sessionData.class;
+            document.getElementById('sig-student').innerText = sessionData.name;
+            document.getElementById('top-label').innerText = topData.label;
+            document.getElementById('result-meaning').innerText = topData.meaning;
+            document.getElementById('result-environment').innerText = topData.environment;
+            document.getElementById('growth-tips').innerText = topData.strategy;
+            
+            const topScoreVal = Math.round(normalizedScores[topKey]);
+            let desc = "";
+            if(topScoreVal >= 85) desc = "Potensi ini sangat dominan and merupakan kekuatan utama Anda.";
+            else if(topScoreVal >= 70) desc = "Potensi ini berkembang dengan baik and siap dioptimalkan.";
+            else desc = "Potensi ini ada namun membutuhkan stimulasi lebih intens.";
+            document.getElementById('top-score-desc').innerText = desc;
+
+            document.getElementById('career-pills').innerHTML = topData.careers.map(c => `
+                <span class="px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg text-[9px] font-bold uppercase tracking-tight border border-slate-200">${c}</span>
+            `).join('');
+
+            document.getElementById('action-plan-list').innerHTML = topData.actions.map(act => `
+                <li class="flex gap-3 items-start">
+                    <i class="fas fa-check-circle text-amber-500 mt-0.5"></i>
+                    <span>${act}</span>
+                </li>
+            `).join('');
+
+            showPage('section-result');
+            
+            setTimeout(() => {
+                const ctx = document.getElementById('radarChart').getContext('2d');
+                if(radarChartInstance) radarChartInstance.destroy();
+                radarChartInstance = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: Object.keys(MI_DATA).map(k => MI_DATA[k].label.split(' ')[0]),
+                        datasets: [{
+                            data: Object.keys(MI_DATA).map(k => normalizedScores[k]),
+                            backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                            borderColor: '#f59e0b',
+                            pointBackgroundColor: '#f59e0b',
+                            borderWidth: 2,
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        scales: { 
+                            r: { 
+                                min: 0, max: 100, 
+                                ticks: { display: false, stepSize: 25 },
+                                pointLabels: { font: { size: 9, weight: 'bold' }, color: '#94a3b8' },
+                                grid: { color: 'rgba(0,0,0,0.05)' }
+                            } 
+                        },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }, 300);
+        }
+
+        function renderReading() {
+            const container = document.getElementById('reading-content');
+            container.innerHTML = Object.keys(MI_DATA).map(k => {
+                const item = MI_DATA[k];
+                return `
+                <div class="glass-card p-8 rounded-[2.5rem] hover:border-amber-300 transition-all">
+                    <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500 mb-6">
+                        <i class="fas ${item.icon} text-lg"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-1">${item.label}</h3>
+                    <p class="text-amber-600 text-[9px] font-black uppercase tracking-widest mb-4">${item.tagline}</p>
+                    <p class="text-slate-500 text-[10px] leading-relaxed">${item.traits}</p>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function logout() { 
+            if(confirm("Keluar and hapus sesi?")) location.reload(); 
+        }
+
+        function goToHome() {
+            if(sessionData.name) showPage('section-quiz');
+            else showPage('section-login');
+        }
+    </script>
+</body>
+</html>
